@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Arcade Mega Ultimate</title>
+    <style>
+        body { background: #090d16; color: #f1f5f9; font-family: sans-serif; text-align: center; padding: 10px; margin: 0; user-select: none; }
+        h1 { color: #38bdf8; font-size: 1.4rem; margin: 10px 0; text-transform: uppercase; letter-spacing: 1px; }
+        .grid-menu { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; max-width: 360px; margin: 10px auto; }
+        .menu-btn { background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 10px; font-weight: bold; font-size: 0.85rem; border-radius: 8px; cursor: pointer; }
+        .menu-btn.active { background: #38bdf8; color: #090d16; border-color: #38bdf8; }
+        .game-card { display: none; background: #1e293b; padding: 15px; border-radius: 12px; max-width: 340px; margin: 15px auto; box-shadow: 0 4px 12px rgba(0,0,0,0.5); border: 1px solid #334155; }
+        .game-card.active { display: block; }
+        .screen { background: #090d16; font-family: monospace; font-size: 1.2rem; padding: 12px; border-radius: 8px; margin: 10px 0; min-height: 130px; white-space: pre; line-height: 1.4; border: 1px solid #334155; color: #f8fafc; letter-spacing: 4px; }
+        .action-btn { background: #334155; color: white; border: none; padding: 12px; font-size: 1rem; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 5px; }
+        .action-btn:hover { background: #38bdf8; color: #090d16; }
+        .arrow-grid { display: flex; gap: 6px; margin-top: 8px; justify-content: center; }
+        .arrow-btn { background: #475569; color: white; border: none; padding: 12px; font-size: 1.1rem; border-radius: 6px; flex: 1; cursor: pointer; }
+        .ttt-box { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; max-width: 180px; margin: 10px auto; }
+        .ttt-slot { background: #090d16; height: 55px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: bold; cursor: pointer; color: #38bdf8; }
+        .slots-zone { font-size: 2.2rem; background: #090d16; padding: 12px; border-radius: 8px; margin: 10px 0; border: 2px dashed #facc15; letter-spacing: 6px; }
+        .miner-box { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; max-width: 180px; margin: 10px auto; }
+        .miner-slot { background: #090d16; height: 55px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; border: 1px solid #334155; }
+    </style>
+</head>
+<body>
+
+    <h1>CYBER ARCADE HUB</h1>
+    
+    <div class="grid-menu">
+        <button class="menu-btn active" onclick="openGame(event, 'g1')">🪙 Клікер</button>
+        <button class="menu-btn" onclick="openGame(event, 'g2')">🔢 Число</button>
+        <button class="menu-btn" onclick="openGame(event, 'g3')">❌ Хрестики</button>
+        <button class="menu-btn" onclick="openGame(event, 'g4')">🏎️ Гонка</button>
+        <button class="menu-btn" onclick="openGame(event, 'g5')">🚀 Шутер</button>
+        <button class="menu-btn" onclick="openGame(event, 'g6')">🟩 Змійка</button>
+        <button class="menu-btn" onclick="openGame(event, 'g7')">🏓 Понг</button>
+        <button class="menu-btn" onclick="openGame(event, 'g8')">🎰 Слоти</button>
+        <button class="menu-btn" onclick="openGame(event, 'g9')">🪵 Вежа</button>
+        <button class="menu-btn" onclick="openGame(event, 'g10')">🏃 Бігун</button>
+        <button class="menu-btn" onclick="openGame(event, 'g12')">✊ КНП</button>
+        <button class="menu-btn" onclick="openGame(event, 'g13')">🧺 Кошик</button>
+        <button class="menu-btn" onclick="openGame(event, 'g14')">💣 Мінер</button>
+        <button class="menu-btn" onclick="openGame(event, 'g15')">🃏 Блекджек</button>
+        <button class="menu-btn" onclick="openGame(event, 'g16')">🐦 Флаппі</button>
+        <button class="menu-btn" onclick="openGame(event, 'g17')">🧱 Тетріс</button>
+        <button class="menu-btn" onclick="openGame(event, 'g18')">🧠 Пам'ять</button>
+        <button class="menu-btn" onclick="openGame(event, 'g19')">🎯 Аім</button>
+        <button class="menu-btn" onclick="openGame(event, 'g20')">🤠 Дуель</button>
+        <button class="menu-btn" onclick="openGame(event, 'g21')">🧊 Геометрія</button>
+        <button class="menu-btn" onclick="openGame(event, 'g11')" style="grid-column: span 2; background: #38bdf8; color: #090d16;">🏆 Рейтинг</button>
+    </div>
+
+    <div id="g1" class="game-card active">
+        <h3>Баланс: <span id="v-coins">100</span> 🪙</h3>
+        <button class="action-btn" style="padding: 20px; background: #38bdf8; color: #090d16;" onclick="klick()">КЛІК!</button>
+        <button class="action-btn" id="v-up" onclick="upgrade()">Апгрейд (+1/с) | Ціна: 15</button>
+    </div>
+
+    <div id="g2" class="game-card">
+        <p>Вгадай число від 1 до 100</p>
+        <input type="number" id="v-num" style="width:50%; padding:8px; text-align:center; background:#090d16; color:white; border:1px solid #334155; border-radius:6px; font-size:1.1rem;">
+        <button class="action-btn" onclick="checkNum()">Перевірити</button>
+        <p id="v-hint" style="color:#38bdf8; margin-top:10px;">Введіть варіант</p>
+    </div>
+
+    <div id="g3" class="game-card">
+        <h4 id="v-ttt-status">Твій хід (X)</h4>
+        <div class="ttt-box">
+            <div class="ttt-slot" onclick="tttClick(0)"></div>
+            <div class="ttt-slot" onclick="tttClick(1)"></div>
+            <div class="ttt-slot" onclick="tttClick(2)"></div>
+            <div class="ttt-slot" onclick="tttClick(3)"></div>
+            <div class="ttt-slot" onclick="tttClick(4)"></div>
+            <div class="ttt-slot" onclick="tttClick(5)"></div>
+            <div class="ttt-slot" onclick="tttClick(6)"></div>
+            <div class="ttt-slot" onclick="tttClick(7)"></div>
+            <div class="ttt-slot" onclick="tttClick(8)"></div>
+        </div>
+        <button class="action-btn" onclick="tttReset()">Очистити поле</button>
+    </div>
+
+    <div id="g4" class="game-card">
+        <h4 id="v-race-score">Бали: 0</h4>
+        <canvas id="v-race-canvas" width="210" height="320" style="background: #0f172a; border-radius: 8px; margin: 10px auto; display: block; border: 2px solid #334155;"></canvas>
+        <button class="action-btn" style="background:#22c55e;" onclick="playRace()">СТАРТ</button>
+        <div class="arrow-grid">
+            <button class="arrow-btn" onclick="dirRace(-1)">◀ Ліворуч</button>
+            <button class="arrow-btn" onclick="dirRace(1)">Праворуч ▶</button>
+        </div>
+    </div>
+
+    <div id="g5" class="game-card">
+        <h4 id="v-shoot-score">Збито НЛО: 0</h4>
+        <div id="v-shoot-disp" class="screen"></div>
+        <button class="action-btn" style="background:#22c55e;" onclick="playShoot()">СТАРТ</button>
+        <div class="arrow-grid">
+            <button class="arrow-btn" onclick="dirShoot(-1)">◀</button>
+            <button class="arrow-btn" style="background:#ef4444;" onclick="fireShoot()">🔥 ВОГОНЬ</button>
+            <button class="arrow-btn" onclick="dirShoot(1)">▶</button>
+        </div>
+    </div>
+
+    <div id="g6" class="game-card">
+        <h4 id="v-snake-score">Довжина: 1</h4>
+        <div id="v-snake-disp" class="screen" style="letter-spacing:1px;"></div>
+        <button class="action-btn" onclick="playSnake()">СТАРТ</button>
+        <div style="margin-top:5px;">
+            <button class="arrow-btn" style="width:50px;" onclick="dirSnake('U')">▲</button><br>
+            <button class="arrow-btn" style="width:50px; margin:3px;" onclick="dirSnake('L')">◀</button>
+            <button class="arrow-btn" style="width:50px; margin:3px;" onclick="dirSnake('R')">▶</button><br>
+            <button class="arrow-btn" style="width:50px;" onclick="dirSnake('D')">▼</button>
+        </div>
+    </div>
+
+    <div id="g7" class="game-card">
+        <h4 id="v-pong-score">Рахунок: 0</h4>
+        <div id="v-pong-disp" class="screen"></div>
+        <button class="action-btn" onclick="playPong()">СТАРТ</button>
+        <div class="arrow-grid">
+            <button class="arrow-btn" onclick="dirPong(-1)">◀</button>
+            <button class="arrow-btn" onclick="dirPong(1)">▶</button>
+        </div>
+    </div>
+
+    <div id="g8" class="game-card">
+        <h4 id="v-slots-status">Вартість: 10 🪙</h4>
+        <div id="v-slots-disp" class="slots-zone">🍒 🍋 💎</div>
+        <button class="action-btn" style="background:#facc15; color:#090d16;" onclick="spin()">🎰 КРУТИТИ</button>
+    </div>
+
+    <div id="g9" class="game-card">
+        <h4 id="v-tower-score">Поверхів: 0</h4>
+        <div id="v-tower-disp" class="screen" style="letter-spacing:2px;"></div>
+        <button class="action-btn" style="background:#a855f7;" onclick="playTower()">СТАРТ</button>
+        <button class="action-btn" style="padding:12px; background:#f1f5f9; color:#090d16;" onclick="dropTower()">🧱 ПОСТАВИТИ БЛОК</button>
+    </div>
+
+    <div id="g10" class="game-card">
+        <h4 id="v-run-score">Дистанція: 0 м</h4>
+        <div id="v-run-disp" class="screen" style="letter-spacing:2px;"></div>
+        <button class="action-btn" style="background:#22c55e;" onclick="playRun()">СТАРТ</button>
+        <button class="action-btn" style="padding:18px; background:#38bdf8; color:#090d16;" onclick="jumpRun()">🏃 СТРИБОК!</button>
+    </div>
+
+    <div id="g12" class="game-card">
+        <h4 id="v-rps-score">Серія перемог: 0</h4>
+        <div id="v-rps-disp" class="screen" style="display:flex; align-items:center; justify-content:center; flex-direction:column; font-size:1rem; letter-spacing:1px;">
+            Вибери жест!
+        </div>
+        <div class="arrow-grid">
+            <button class="arrow-btn" style="font-size:1.8rem;" onclick="playRPS(0)">✊</button>
+            <button class="arrow-btn" style="font-size:1.8rem;" onclick="playRPS(1)">✋</button>
+            <button class="arrow-btn" style="font-size:1.8rem;" onclick="playRPS(2)">✌️</button>
+        </div>
+    </div>
+
+    <div id="g13" class="game-card">
+        <h4 id="v-catch-score">Спіймано: 0</h4>
+        <div id="v-catch-disp" class="screen"></div>
+        <button class="action-btn" style="background:#22c55e;" onclick="playCatch()">СТАРТ</button>
+        <div class="arrow-grid">
+            <button class="arrow-btn" onclick="dirCatch(-1)">◀ Вліво</button>
+            <button class="arrow-btn" onclick="dirCatch(1)">Вправо ▶</button>
+        </div>
+    </div>
+
+    <div id="g14" class="game-card">
+        <h4 id="v-miner-score">Вижито раундів: 0</h4>
+        <p style="font-size:0.9rem; color:#94a3b8; margin:5px;">Знайди алмаз, але не натисни на бомбу!</p>
+        <div class="miner-box">
+            <div class="miner-slot" id="m-slot-0" onclick="clickMiner(0)">📦</div>
+            <div class="miner-slot" id="m-slot-1" onclick="clickMiner(1)">📦</div>
+            <div class="miner-slot" id="m-slot-2" onclick="clickMiner(2)">📦</div>
+            <div class="miner-slot" id="m-slot-3" onclick="clickMiner(3)">📦</div>
+            <div class="miner-slot" id="m-slot-4" onclick="clickMiner(4)">📦</div>
+            <div class="miner-slot" id="m-slot-5" onclick="clickMiner(5)">📦</div>
+            <div class="miner-slot" id="m-slot-6" onclick="clickMiner(6)">📦</div>
+            <div class="miner-slot" id="m-slot-7" onclick="clickMiner(7)">📦</div>
+            <div class="miner-slot" id="m-slot-8" onclick="clickMiner(8)">📦</div>
+        </div>
+        <button class="action-btn" style="background:#38bdf8; color:#090d16;" onclick="playMiner()">НОВА ГРА</button>
+    </div>
+
+    <div id="g15" class="game-card">
+        <h4 id="v-bj-score">Серія перемог: 0</h4>
+        <div id="v-bj-disp" class="screen" style="font-size:1rem; letter-spacing:1px; display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:140px; white-space:normal;">
+            Ставка: 10 🪙. Натисни РОЗДАЧА, щоб зіграти проти дилера!
+        </div>
+        <div id="v-bj-ctrl" style="display:none; gap:6px; margin-top:5px;">
+            <button class="action-btn" style="flex:1; background:#22c55e; margin:0;" onclick="bjHit()">🃏 Ще</button>
+            <button class="action-btn" style="flex:1; background:#ef4444; margin:0;" onclick="bjStand()">🛑 Досить</button>
+        </div>
+        <button id="v-bj-start" class="action-btn" style="background:#38bdf8; color:#090d16;" onclick="bjStart()">🃏 РОЗДАЧА (-10 🪙)</button>
+    </div>
+
+    <div id="g16" class="game-card">
+        <h4 id="v-flap-score">Рахунок: 0</h4>
+        <canvas id="v-flap-canvas" width="210" height="260" style="background: #0f172a; border-radius: 8px; margin: 10px auto; display: block; border: 2px solid #334155;"></canvas>
+        <button class="action-btn" style="background:#22c55e;" onclick="playFlap()">СТАРТ</button>
+        <button class="action-btn" style="padding:16px; background:#38bdf8; color:#090d16;" onclick="jumpFlap()">🚀 ВГОРУ!</button>
+    </div>
+
+    <div id="g17" class="game-card">
+        <h4 id="v-tetris-score">Очки: 0</h4>
+        <canvas id="v-tetris-canvas" width="160" height="280" style="background: #0f172a; border-radius: 8px; margin: 5px auto; display: block; border: 2px solid #334155;"></canvas>
+        <button class="action-btn" style="background:#22c55e;" onclick="playTetris()">СТАРТ</button>
+        <div class="arrow-grid">
+            <button class="arrow-btn" onclick="moveTetris(-1)">◀</button>
+            <button class="arrow-btn" style="background:#facc15; color:#090d16;" onclick="rotateTetris()">🔄</button>
+            <button class="arrow-btn" onclick="moveTetris(1)">▶</button>
+        </div>
+        <button class="action-btn" style="background:#475569; margin-top:5px; padding:6px;" onclick="dropTetris()">⬇ Падіння</button>
+    </div>
+
+    <div id="g18" class="game-card">
+        <h4 id="v-mem-score">Рівень: 0</h4>
+        <p style="font-size:0.85rem; color:#94a3b8; margin:4px;">Повторюй спалахи блоків!</p>
+        <div class="miner-box" style="max-width:160px; gap:4px;">
+            <div class="miner-slot" id="ms-0" onclick="clickMem(0)" style="background:#1e293b; font-size:1.2rem; transition: background 0.15s;">⚡</div>
+            <div class="miner-slot" id="ms-1" onclick="clickMem(1)" style="background:#1e293b; font-size:1.2rem; transition: background 0.15s;">⚡</div>
+            <div class="miner-slot" id="ms-2" onclick="clickMem(2)" style="background:#1e293b; font-size:1.2rem; transition: background 0.15s;">⚡</div>
+            <div class="miner-slot" id="ms-3" onclick="clickMem(3)" style="background:#1e293b; font-size:1.2rem; transition: background 0.15s;">⚡</div>
+            <div class="miner-slot" id="ms-4" onclick="clickMem(4)" style="background:#1e293b; font-size:1.2rem; transition: background 0.15s;">⚡</div>
+            <div class="miner-slot" id="ms-5" onclick="clickMem(5)" style="background:#1e293b; font-size:1.2rem; transition: background 0.15s;">⚡</div>
+            <div class="miner-slot" id="ms-6" onclick="clickMem(6)" style="background:#1e293b; font-size:1.2rem; transition: background 0.15s;">⚡</div>
+            <div class="miner-slot" id="ms-7" onclick="clickMem(7)" style="background:#1e293b; font-size:1.2rem; transition: background 0.15s;">⚡</div>
+            <div class="miner-slot" id="ms-8" onclick="clickMem(8)" style="background:#1e293b; font-size:1.2rem; transition: background 0.15s;">⚡</div>
+        </div>
+        <button class="action-btn" style="background:#38bdf8; color:#090d16;" onclick="startMem()">СТАРТ</button>
+    </div>
+
+    <div id="g19" class="game-card">
+        <h4 id="v-aim-score">Попадання: 0 | Час: 20с</h4>
+        <div id="v-aim-field" style="width:100%; height:220px; background:#090d16; border:2px dashed #e2e8f0; border-radius:8px; position:relative; overflow:hidden; margin:10px 0;">
+            <div id="v-aim-target" onclick="hitAim()" style="display:none; width:34px; height:34px; background:#ef4444; border:3px solid #fecdd3; border-radius:50%; position:absolute; cursor:pointer; box-shadow:0 0 10px #ef4444;"></div>
+        </div>
+        <button class="action-btn" style="background:#22c55e;" onclick="startAim()">СТАРТ ТРЕНУВАННЯ</button>
+    </div>
+
+    <div id="g20" class="game-card">
+        <h4 id="v-duel-score">Раунд: 0</h4>
+        <p style="font-size:0.85rem; color:#94a3b8; margin:4px;">Чекай на зелений сигнал!</p>
+        <div id="v-duel-light" style="width:100%; height:130px; background:#1e293b; border-radius:8px; margin:10px 0; display:flex; align-items:center; justify-content:center; font-size:1.5rem; font-weight:bold; color:#f1f5f9; text-transform:uppercase; border: 2px solid #334155;">
+            Готовий?
+        </div>
+        <button class="action-btn" id="v-duel-btn" style="background:#facc15; color:#090d16; padding:20px; font-size:1.2rem; margin-bottom:10px;" onclick="duelShoot()">💥 ВОГОНЬ!</button>
+        <button class="action-btn" style="background:#475569;" onclick="playDuel()">ПОЧАТИ ГРУ</button>
+    </div>
+
+    <div id="g21" class="game-card">
+        <h4 id="v-dash-score">Прогрес: 0</h4>
+        <canvas id="v-dash-canvas" width="210" height="200" style="background: #0f172a; border-radius: 8px; margin: 10px auto; display: block; border: 2px solid #334155;"></canvas>
+        <button class="action-btn" style="background:#22c55e;" onclick="playDash()">СТАРТ</button>
+        <button class="action-btn" style="padding:16px; background:#38bdf8; color:#090d16;" onclick="jumpDash()">🔼 СТРИБОК!</button>
+    </div>
+
+    <div id="g11" class="game-card">
+        <h3>🏆 ТОП РЕЗУЛЬТАТІВ</h3>
+        <div id="v-leaderboard" style="text-align: left; font-family: monospace; font-size: 0.95rem; margin: 15px 0; line-height: 2;"></div>
+        <button class="action-btn" onclick="resetLeaderboard()" style="background:#ef4444;">Очистити рекорди</button>
+    </div>
+
+    <script>
+        let timers = {};
+        
+        // СИСТЕМА ЛІДЕРБОРДУ
+        function updateScore(gameName, score) {
+            let bestScores = JSON.parse(localStorage.getItem('cyberArcadeBest') || '{}');
+            if (!bestScores[gameName] || score > bestScores[gameName]) {
+                bestScores[gameName] = score;
+                localStorage.setItem('cyberArcadeBest', JSON.stringify(bestScores));
+            }
+        }
+
+        function renderLeaderboard() {
+            let bestScores = JSON.parse(localStorage.getItem('cyberArcadeBest') || '{}');
+            let gamesList = {
+                "g1": "🪙 Монети (Багатство)",
+                "g2": "🔢 Число (Вгадано)",
+                "g3": "❌ Хрестики (Перемоги)",
+                "g4": "🏎️ Гонка (Бали)",
+                "g5": "🚀 Шутер (Збито НЛО)",
+                "g6": "🟩 Змійка (Довжина)",
+                "g7": "🏓 Понг (Рахунок)",
+                "g9": "🪵 Вежа (Поверхів)",
+                "g10": "🏃 Бігун (Дистанція)",
+                "g12": "✊ КНП (Серія перемог)",
+                "g13": "🧺 Кошик (Спіймано)",
+                "g14": "💣 Мінер (Раунди)",
+                "g15": "🃏 Блекджек (Перемоги)",
+                "g16": "🐦 Флаппі (Рекорд)",
+                "g17": "🧱 Тетріс (Очки)",
+                "g18": "🧠 Пам'ять (Рівень)",
+                "g19": "🎯 Аім-тренер (Попадання)",
+                "g20": "🤠 Дуель (Раунди)",
+                "g21": "🧊 Геометрія (Прогрес)"
+            };
+            
+            let html = "";
+            Object.keys(gamesList).forEach(key => {
+                let score = bestScores[gamesList[key]] || 0;
+                html += `<div>${gamesList[key]}: <b style="color:#38bdf8;">${score}</b></div>`;
+            });
+            document.getElementById('v-leaderboard').innerHTML = html;
+        }
+
+        function resetLeaderboard() {
+            localStorage.removeItem('cyberArcadeBest');
+            renderLeaderboard();
+        }
+
+        function openGame(e, id) {
+            document.querySelectorAll('.game-card').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            e.target.classList.add('active');
+            
+            if(id === 'g11') renderLeaderboard();
+            Object.keys(timers).forEach(k => clearInterval(timers[k]));
+            if(timers.duelTimeout) clearTimeout(timers.duelTimeout); 
+        }
+
+        // 1. КЛІКЕР
+        let cn = 100, cps = 0, cost = 15;
+        function klick() { cn++; upC(); }
+        function upgrade() { if(cn>=cost) { cn-=cost; cps++; cost=Math.floor(cost*1.5); upC(); } }
+        function upC() { 
+            document.getElementById('v-coins').innerText = cn; 
+            document.getElementById('v-up').innerText = `Апгрейд (+1/с) | Ціна: ${cost}`; 
+            updateScore("🪙 Монети (Багатство)", cn);
+        }
+        setInterval(() => { if(cps>0) { cn+=cps; upC(); } }, 1000);
+
+        // 2. ЧИСЛО
+        let rNum = Math.floor(Math.random()*100)+1;
+        let numWins = 0;
+        function checkNum() {
+            let val = parseInt(document.getElementById('v-num').value);
+            let h = document.getElementById('v-hint');
+            if(val===rNum) { 
+                h.innerText="🎉 Вгадано!"; 
+                numWins++;
+                updateScore("🔢 Число (Вгадано)", numWins);
+                rNum=Math.floor(Math.random()*100)+1; 
+            }
+            else { h.innerText = val < rNum ? "Більше! ⬆️" : "Менше! ⬇️"; }
+        }
+
+        // 3. ХРЕСТИКИ
+        let grid = ["","","","","","","","",""], active = true;
+        let tttWins = 0;
+        function tttClick(i) {
+            if(grid[i]!=="" || !active) return;
+            grid[i]="X"; renderTTT();
+            if(checkWin("X")) { 
+                document.getElementById('v-ttt-status').innerText="Ви виграли! 🎉"; 
+                tttWins++; updateScore("❌ Хрестики (Перемоги)", tttWins);
+                active=false; return; 
+            }
+            if(!grid.includes("")) { document.getElementById('v-ttt-status').innerText="Нічия! 🤝"; active=false; return; }
+            active = false;
+            setTimeout(() => {
+                let empty = grid.map((v,idx)=>v===""?idx:null).filter(v=>v!==null);
+                if(empty.length>0) grid[empty[Math.floor(Math.random()*empty.length)]]="O";
+                renderTTT();
+                if(checkWin("O")) { document.getElementById('v-ttt-status').innerText="Робот виграв! 🤖"; tttWins=0; }
+                else { document.getElementById('v-ttt-status').innerText="Твій хід (X)"; active=true; }
+            }, 250);
+        }
+        function checkWin(p) { return [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]].some(a => a.every(i => grid[i]===p)); }
+        function renderTTT() { document.querySelectorAll('.ttt-slot').forEach((s,i) => s.innerText=grid[i]); }
+        function tttReset() { grid=["","","","","","","","",""]; active=true; document.getElementById('v-ttt-status').innerText="Твій хід (X)"; renderTTT(); }
+
+        // 4. ОНОВЛЕНА ГРАФІЧНА ГОНКА (CANVAS СТИЛЬ)
+        let carLane = 1, obstacles = [], rScore = 0, rSpeed = 4, roadOffset = 0;
+        function dirRace(d) { carLane = Math.max(0, Math.min(2, carLane + d)); }
+        function playRace() {
+            rScore = 0; carLane = 1; rSpeed = 5; obstacles = []; roadOffset = 0;
+            document.getElementById('v-race-score').innerText = "Бали: 0";
+            clearInterval(timers.race);
+            timers.race = setInterval(loopRace, 25);
+        }
+        function loopRace() {
+            let canvas = document.getElementById('v-race-canvas');
+            if (!canvas) return;
+            let ctx = canvas.getContext('2d');
+            
+            roadOffset = (roadOffset + rSpeed) % 40;
+            
+            if (Math.random() < 0.03 && obstacles.length < 3) {
+                let canSpawn = true;
+                if (obstacles.length > 0) {
+                    if (obstacles[obstacles.length - 1].y < 120) canSpawn = false;
+                }
+                if (canSpawn) {
+                    obstacles.push({
+                        lane: Math.floor(Math.random() * 3),
+                        y: -60,
+                        color: ['#ef4444', '#f97316', '#a855f7', '#10b981'][Math.floor(Math.random() * 4)]
+                    });
+                }
+            }
+            
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, 210, 320);
+            
+            ctx.fillStyle = '#334155';
+            for (let y = roadOffset - 40; y < 320; y += 40) {
+                ctx.fillRect(68, y, 4, 20);
+                ctx.fillRect(138, y, 4, 20);
+            }
+            
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                obstacles[i].y += rSpeed;
+                let oX = obstacles[i].lane * 70 + 20;
+                let oY = obstacles[i].y;
+                
+                drawVectorCar(ctx, oX, oY, false, obstacles[i].color);
+                
+                let pX = carLane * 70 + 20;
+                let pY = 240;
+                if (oX < pX + 30 && oX + 30 > pX && oY < pY + 50 && oY + 50 > pY) {
+                    clearInterval(timers.race);
+                    document.getElementById('v-race-score').innerText = "💥 Аварія! Рахунок: " + rScore;
+                    updateScore("🏎️ Гонка (Бали)", rScore);
+                    return;
+                }
+                
+                if (obstacles[i].y > 320) {
+                    obstacles.splice(i, 1);
+                    rScore += 10;
+                    document.getElementById('v-race-score').innerText = "Бали: " + rScore;
+                    if (rSpeed < 14) rSpeed += 0.3;
+                }
+            }
+            drawVectorCar(ctx, carLane * 70 + 20, 240, true, '#38bdf8');
+        }
+        function drawVectorCar(ctx, x, y, isPlayer, color) {
+            ctx.fillStyle = color; ctx.fillRect(x, y, 30, 50); ctx.fillStyle = '#000000'; ctx.fillRect(x - 3, y + 6, 3, 10); ctx.fillRect(x + 30, y + 6, 3, 10); ctx.fillRect(x - 3, y + 34, 3, 10); ctx.fillRect(x + 30, y + 34, 3, 10); ctx.fillStyle = '#e2e8f0'; ctx.fillRect(x + 4, y + 14, 22, 8); ctx.fillStyle = '#1e293b'; ctx.fillRect(x + 6, y + 16, 18, 6);
+            if (isPlayer) { ctx.fillStyle = '#facc15'; ctx.fillRect(x + 3, y, 5, 3); ctx.fillRect(x + 22, y, 5, 3); } else { ctx.fillStyle = '#ef4444'; ctx.fillRect(x + 3, y + 47, 5, 3); ctx.fillRect(x + 22, y + 47, 5, 3); }
+        }
+
+        // 5. ШУТЕР
+        let shPos = 2, shEnemy = 0, shScore = 0, bX = -1, bY = -1, bTimer = 0;
+        function dirShoot(d) { shPos = Math.max(0, Math.min(4, shPos+d)); drawShoot(); }
+        function fireShoot() { if(bY<0) { bX=shPos; bY=4; } }
+        function playShoot() { shScore=0; shPos=2; shEnemy=Math.floor(Math.random()*5); bY=-1; bTimer=0; clearInterval(timers.shoot); timers.shoot = setInterval(loopShoot, 160); }
+        function loopShoot() {
+            if(bY>=0) { bY--; if(bY===0 && bX===shEnemy) { shScore++; updateScore("🚀 Шутер (Збито НЛО)", shScore); bTimer=2; bY=-1; } else if(bY<0) bY=-1; }
+            if(bTimer>0) { bTimer--; if(bTimer===0) shEnemy=Math.floor(Math.random()*5); } else { if(Math.random()>0.75) shEnemy=Math.floor(Math.random()*5); }
+            document.getElementById('v-shoot-score').innerText="Збито НЛО: "+shScore; drawShoot();
+        }
+        function drawShoot() {
+            let r=[[" "," "," "," "," "],[" "," "," "," "," "],[" "," "," "," "," "],[" "," "," "," "," "],[" "," "," "," "," "],[" "," "," "," "," "]];
+            if(bTimer>0) r[0][shEnemy]="💥"; else r[0][shEnemy]="🛸"; if(bY>=0 && bY<5) r[bY][bX]="▲"; r[5][shPos]="🚀";
+            document.getElementById('v-shoot-disp').innerText = r.map(row=>"|"+row.join("")+"|").join("\n");
+        }
+
+        // 6. ЗМІЙКА
+        let sGrid=7, sBody=[], sDir="R", sFood={x:4,y:2};
+        function dirSnake(d) { sDir=d; }
+        function playSnake() { sBody=[{x:2,y:2}]; sDir="R"; clearInterval(timers.snake); timers.snake = setInterval(loopSnake, 350); }
+        function loopSnake() {
+            let h = Object.assign({}, sBody[0]);
+            if(sDir==="R") h.x++; if(sDir==="L") h.x--; if(sDir==="U") h.y--; if(sDir==="D") h.y++;
+            if(h.x<0||h.x>=sGrid||h.y<0||h.y>=sGrid||sBody.some(b=>b.x===h.x&&b.y===h.y)) { 
+                clearInterval(timers.snake); 
+                document.getElementById('v-snake-score').innerText="💥 Кінець! Рахунок: "+sBody.length; 
+                updateScore("🟩 Змійка (Довжина)", sBody.length); return; 
+            }
+            sBody.unshift(h); if(h.x===sFood.x && h.y===sFood.y) { sFood={x:Math.floor(Math.random()*sGrid), y:Math.floor(Math.random()*sGrid)}; } else sBody.pop();
+            document.getElementById('v-snake-score').innerText="Довжина: "+sBody.length; drawSnake();
+        }
+        function drawSnake() {
+            let res=""; for(let y=0;y<sGrid;y++){ for(let x=0;x<sGrid;x++){ if(sBody.some(b=>b.x===x&&b.y===y)) res+="🟩"; else if(sFood.x===x&&sFood.y===y) res+="🍎"; else res+="⬛"; } res+="\n"; }
+            document.getElementById('v-snake-disp').innerText=res;
+        }
+
+        // 7. ПОНГ
+        let pPad=1, pBall={x:2,y:1}, pDir={x:1,y:1}, pSc=0;
+        function dirPong(d) { pPad=Math.max(0,Math.min(2,pPad+d)); }
+        function playPong() { pSc=0; pPad=1; pBall={x:2,y:1}; pDir={x:1,y:1}; clearInterval(timers.pong); timers.pong = setInterval(loopPong, 380); }
+        function loopPong() {
+            pBall.x+=pDir.x; pBall.y+=pDir.y; if(pBall.x<=0||pBall.x>=3) pDir.x=-pDir.x; if(pBall.y<=0) pDir.y=-pDir.y;
+            if(pBall.y===4) { 
+                if(pBall.x>=pPad && pBall.x<=pPad+1) { pDir.y=-pDir.y; pSc++; } 
+                else { 
+                    clearInterval(timers.pong); 
+                    document.getElementById('v-pong-score').innerText="❌ Програш! Рахунок: "+pSc; 
+                    updateScore("🏓 Понг (Рахунок)", pSc); return; 
+                } 
+            }
+            document.getElementById('v-pong-score').innerText="Рахунок: "+pSc; drawPong();
+        }
+        function drawPong() {
+            let v=[[" "," "," "," "],[" "," "," "," "],[" "," "," "," "],[" "," "," "," "],[" "," "," "," "]]; if(pBall.y>=0&&pBall.y<5&&pBall.x>=0&&pBall.x<4) v[pBall.y][pBall.x]="🟡";
+            let pd=["_","_","_","_"]; pd[pPad]="═"; pd[pPad+1]="═"; document.getElementById('v-pong-disp').innerText=v.slice(0,4).map(l=>"|"+l.join("")+"|").join("\n")+"\n|"+pd.join("")+"|";
+        }
+
+        // 8. СЛОТИ
+        const slItems = ["🍒", "🍋", "💎", "⭐", "🍀"];
+        function spin() {
+            if(cn<10) { document.getElementById('v-slots-status').innerText="❌ Мало монет!"; return; }
+            cn-=10; upC(); let a=slItems[Math.floor(Math.random()*5)], b=slItems[Math.floor(Math.random()*5)], c=slItems[Math.floor(Math.random()*5)];
+            document.getElementById('v-slots-disp').innerText=`${a} ${b} ${c}`;
+            if(a===b && b===c) { cn+=150; document.getElementById('v-slots-status').innerText="🎉 ДЖЕКПОТ! +150 🪙"; }
+            else if(a===b || b===c || a===c) { cn+=25; document.getElementById('v-slots-status').innerText="💵 Виграш! +25 🪙"; }
+            else document.getElementById('v-slots-status').innerText="😢 Спробуй знову!"; upC();
+        }
+
+        // 9. ВЕЖА
+        let tH=0, tX=0, tDir=1, tGrid=["     ","     ","     ","     ","     "];
+        function playTower() { tH=0; tX=0; tDir=1; tGrid=["     ","     ","     ","     ","     "]; document.getElementById('v-tower-score').innerText="Поверхів: 0"; clearInterval(timers.tower); timers.tower = setInterval(loopTower, 140); }
+        function loopTower() { tX+=tDir; if(tX<=0||tX>=4) tDir=-tDir; drawTower(); }
+        function dropTower() {
+            if(tH===0 || tX===2 || Math.random()>0.35) { 
+                tH++; document.getElementById('v-tower-score').innerText="Поверхів: "+tH; 
+                let l=[" "," "," "," "," "]; l[tX]="█"; l[tX+1]="█"; tGrid.pop(); tGrid.unshift(l.join("")); 
+            } else { 
+                clearInterval(timers.tower); document.getElementById('v-tower-score').innerText="💥 Упала! Рахунок: "+tH; 
+                updateScore("🪵 Вежа (Поверхів)", tH);
+            }
+        }
+        function drawTower() { let c=[" "," "," "," "," "]; c[tX]="▄"; c[tX+1]="▄"; document.getElementById('v-tower-disp').innerText="|"+c.join("")+"| (Приціл)\n"+tGrid.map(g=>"|"+g+"|").join("\n"); }
+
+        // 10. БІГУН
+        let rDist=0, rJump=0, rObs=8;
+        function playRun() { rDist=0; rJump=0; rObs=8; clearInterval(timers.runner); timers.runner = setInterval(loopRun, 180); }
+        function jumpRun() { if(rJump===0) rJump=3; }
+        function loopRun() {
+            rObs--; if(rObs<0) rObs=6+Math.floor(Math.random()*3); if(rJump>0) rJump--;
+            if(rObs===1 && rJump===0) { 
+                clearInterval(timers.runner); document.getElementById('v-run-score').innerText="💥 Програш! Дистанція: "+rDist+" м"; 
+                updateScore("🏃 Бігун (Дистанція)", rDist); return; 
+            }
+            rDist+=2; document.getElementById('v-run-score').innerText="Дистанція: "+rDist+" м"; drawRun();
+        }
+        function drawRun() {
+            let sk=[" "," "," "," "," "," "," "," "," "], gr=["_","_","_","_","_","_","_","_","_"];
+            if(rJump>0) sk[1]="🏃"; else gr[1]="🏃"; if(rObs>=0 && rObs<9) gr[rObs]="🌵";
+            document.getElementById('v-run-disp').innerText=sk.join("")+"\n"+gr.join("");
+        }
+
+        // 12. КАМІНЬ НОЖИЦІ ПАПІР
+        let rpsScore = 0;
+        function playRPS(p) {
+            let choices = ['✊', '✋', '✌️']; let b = Math.floor(Math.random() * 3); let resText = "";
+            if(p === b) { resText = "Нічия! 🤝"; }
+            else if((p===0&&b===2) || (p===1&&b===0) || (p===2&&b===1)) {
+                resText = "Перемога! 🎉"; rpsScore++; updateScore("✊ КНП (Серія перемог)", rpsScore);
+            } else { resText = "Програш! 😢"; rpsScore = 0; }
+            document.getElementById('v-rps-disp').innerText = `Ти: ${choices[p]}  |  Бот: ${choices[b]}\n\n${resText}`;
+            document.getElementById('v-rps-score').innerText = "Серія перемог: " + rpsScore;
+        }
+
+        // 13. КОШИК
+        let cPad = 2, cApple = {x: 2, y: 0}, cSc = 0;
+        function dirCatch(d) { cPad = Math.max(0, Math.min(4, cPad+d)); drawCatch(); }
+        function playCatch() { cSc = 0; cPad = 2; cApple = {x: Math.floor(Math.random()*5), y: 0}; clearInterval(timers.catcher); timers.catcher = setInterval(loopCatch, 350); }
+        function loopCatch() {
+            cApple.y++;
+            if(cApple.y === 5) {
+                if(cApple.x === cPad) { cSc++; cApple = {x: Math.floor(Math.random()*5), y: 0}; }
+                else { 
+                    clearInterval(timers.catcher); document.getElementById('v-catch-score').innerText="❌ Впало! Рахунок: "+cSc; 
+                    updateScore("🧺 Кошик (Спіймано)", cSc); return; 
+                }
+            }
+            document.getElementById('v-catch-score').innerText="Спіймано: "+cSc; drawCatch();
+        }
+        function drawCatch() {
+            let v=[[" "," "," "," "," "],[" "," "," "," "," "],[" "," "," "," "," "],[" "," "," "," "," "],[" "," "," "," "," "]]; if(cApple.y>=0&&cApple.y<5) v[cApple.y][cApple.x]="🍎";
+            let pd=["_","_","_","_","_"]; pd[cPad]="🧺"; document.getElementById('v-catch-disp').innerText=v.map(l=>"|"+l.join("")+"|").join("\n")+"\n|"+pd.join("")+"|";
+        }
+
+        // 14. МІНЕР
+        let mScore = 0, mBomb = 0, mActive = false;
+        function playMiner() { mScore = 0; startMinerRound(); document.getElementById('v-miner-score').innerText="Вижито раундів: 0"; }
+        function startMinerRound() { mActive = true; mBomb = Math.floor(Math.random()*9); for(let i=0; i<9; i++) document.getElementById('m-slot-'+i).innerText="📦"; }
+        function clickMiner(i) {
+            if(!mActive) return;
+            if(i === mBomb) {
+                document.getElementById('m-slot-'+i).innerText="💥"; mActive = false;
+                document.getElementById('v-miner-score').innerText="💥 Підрив! Рахунок: " + mScore; updateScore("💣 Мінер (Раунди)", mScore);
+            } else {
+                document.getElementById('m-slot-'+i).innerText="💎"; mActive = false; mScore++;
+                document.getElementById('v-miner-score').innerText="Вижито раундів: " + mScore; setTimeout(startMinerRound, 500);
+            }
+        }
+
+        // 15. БЛЕКДЖЕК
+        let bjPlayer = [], bjDealer = [], bjActive = false, bjWins = 0;
+        function getBjCard() { const cards = [2,3,4,5,6,7,8,9,10,10,10,10,11]; return cards[Math.floor(Math.random()*cards.length)]; }
+        function getBjSum(arr) {
+            let sum = arr.reduce((a,b)=>a+b, 0); let aces = arr.filter(c => c === 11).length;
+            while (sum > 21 && aces > 0) { sum -= 10; aces--; } return sum;
+        }
+        function bjStart() {
+            if(cn < 10) { document.getElementById('v-bj-disp').innerText = "❌ Немає монет! Тобі потрібно мінімум 10 🪙."; return; }
+            cn -= 10; upC(); bjPlayer = [getBjCard(), getBjCard()]; bjDealer = [getBjCard()]; bjActive = true;
+            document.getElementById('v-bj-start').style.display = 'none'; document.getElementById('v-bj-ctrl').style.display = 'flex'; bjRender();
+        }
+        function bjRender() {
+            let pSum = getBjSum(bjPlayer); let dSum = getBjSum(bjDealer);
+            document.getElementById('v-bj-disp').innerHTML = `Твої карти: <b>${bjPlayer.join(', ')}</b> (Сума: ${pSum})<br>Карта дилера: <b>${bjDealer.join(', ')}</b> (Сума: ${dSum})`;
+            if(pSum === 21) { bjEnd("У тебе Блекджек! Перемога! 🎉", true); } else if(pSum > 21) { bjEnd("Перебір! Програш 😢", false); }
+        }
+        function bjHit() { if(!bjActive) return; bjPlayer.push(getBjCard()); bjRender(); }
+        function bjStand() {
+            if(!bjActive) return; while(getBjSum(bjDealer) < 17) { bjDealer.push(getBjCard()); }
+            let pSum = getBjSum(bjPlayer); let dSum = getBjSum(bjDealer);
+            if(dSum > 21 || pSum > dSum) { bjEnd(`Ти виграв! У дилера перебір або менше (${dSum}) 🎉`, true); }
+            else if(pSum < dSum) { bjEnd(`Програш! У дилера більше (${dSum}) 😢`, false); }
+            else { bjEnd(`Нічия! У дилера теж (${dSum}) 🤝`, null); }
+        }
+        function bjEnd(msg, isWin) {
+            bjActive = false;
+            if(isWin === true) { cn += 25; bjWins++; updateScore("🃏 Блекджек (Перемоги)", bjWins); }
+            else if(isWin === null) { cn += 10; } else { bjWins = 0; }
+            upC(); document.getElementById('v-bj-score').innerText = "Серія перемог: " + bjWins;
+            document.getElementById('v-bj-disp').innerHTML += `<br><br><b style="color:#facc15">${msg}</b>`;
+            document.getElementById('v-bj-start').style.display = 'block'; document.getElementById('v-bj-ctrl').style.display = 'none';
+        }
+
+        // 16. ФЛАППІ
+        let flapY = 100, flapV = 0, flapPipeX = 210, flapPipeY = 80, flapScore = 0;
+        function playFlap() {
+            flapY = 100; flapV = 0; flapPipeX = 210; flapPipeY = 50 + Math.random() * 90; flapScore = 0;
+            document.getElementById('v-flap-score').innerText = "Рахунок: 0"; clearInterval(timers.flap); timers.flap = setInterval(loopFlap, 30);
+        }
+        function jumpFlap() { flapV = -4.5; }
+        function loopFlap() {
+            let canvas = document.getElementById('v-flap-canvas'); if(!canvas) return; let ctx = canvas.getContext('2d');
+            flapV += 0.25; flapY += flapV; flapPipeX -= 3;
+            if(flapPipeX < -30) { flapPipeX = 210; flapPipeY = 40 + Math.random() * 90; flapScore++; document.getElementById('v-flap-score').innerText = "Рахунок: " + flapScore; updateScore("🐦 Флаппі (Рекорд)", flapScore); }
+            if(flapY > 255 || flapY < 0) { clearInterval(timers.flap); document.getElementById('v-flap-score').innerText = "💥 Упав! Рахунок: " + flapScore; return; }
+            if(flapPipeX > 20 && flapPipeX < 60) { if(flapY < flapPipeY || flapY > flapPipeY + 75) { clearInterval(timers.flap); document.getElementById('v-flap-score').innerText = "💥 Зіткнення! Рахунок: " + flapScore; return; } }
+            ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, 210, 260);
+            ctx.fillStyle = '#10b981'; ctx.fillRect(flapPipeX, 0, 30, flapPipeY); ctx.fillRect(flapPipeX, flapPipeY + 75, 30, 260 - flapPipeY - 75);
+            ctx.fillStyle = '#facc15'; ctx.beginPath(); ctx.arc(45, flapY, 8, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#000'; ctx.fillRect(48, flapY - 4, 2, 2); ctx.fillStyle = '#f97316'; ctx.fillRect(53, flapY - 2, 4, 3);
+        }
+
+        // 17. ТЕТРІС
+        const tetRows = 14, tetCols = 8;
+        let tetGrid = Array(tetRows).fill().map(()=>Array(tetCols).fill(0));
+        let tetCurrent, tetX, tetY, tetScore = 0;
+        const figures = [ [[1,1,1,1]], [[1,1,1],[0,1,0]], [[1,1,1],[1,0,0]], [[1,1],[1,1]], [[1,1,0],[0,1,1]] ];
+        function playTetris() {
+            tetGrid = Array(tetRows).fill().map(()=>Array(tetCols).fill(0));
+            tetScore = 0; document.getElementById('v-tetris-score').innerText="Очки: 0";
+            spawnTetris(); clearInterval(timers.tetris); timers.tetris = setInterval(loopTetris, 600);
+        }
+        function spawnTetris() {
+            tetCurrent = figures[Math.floor(Math.random()*figures.length)];
+            tetX = Math.floor((tetCols - tetCurrent[0].length)/2); tetY = 0;
+            if(collidesTetris(0,0,tetCurrent)) { clearInterval(timers.tetris); document.getElementById('v-tetris-score').innerText="💥 Game Over! Очки: " + tetScore; }
+        }
+        function collidesTetris(dx, dy, fig) {
+            for(let r=0; r<fig.length; r++) {
+                for(let c=0; c<fig[r].length; c++) {
+                    if(fig[r][c]) {
+                        let nx = tetX + c + dx; let ny = tetY + r + dy;
+                        if(nx<0 || nx>=tetCols || ny>=tetRows) return true;
+                        if(ny>=0 && tetGrid[ny][nx]) return true;
+                    }
+                }
+            }
+            return false;
+        }
+        function moveTetris(d) { if(!collidesTetris(d,0,tetCurrent)) { tetX+=d; drawTetris(); } }
+        function rotateTetris() {
+            let r = tetCurrent[0].map((_,i)=>tetCurrent.map(row=>row[i])).reverse();
+            if(!collidesTetris(0,0,r)) { tetCurrent=r; drawTetris(); }
+        }
+        function dropTetris() { while(!collidesTetris(0,1,tetCurrent)) tetY++; loopTetris(); }
+        function loopTetris() {
+            if(!collidesTetris(0,1,tetCurrent)) { tetY++; } 
+            else {
+                for(let r=0; r<tetCurrent.length; r++) {
+                    for(let c=0; c<tetCurrent[r].length; c++) {
+                        if(tetCurrent[r][c] && tetY+r>=0) tetGrid[tetY+r][tetX+c] = 1;
+                    }
+                }
+                for(let r=tetRows-1; r>=0; r--) {
+                    if(tetGrid[r].every(v=>v===1)) { tetGrid.splice(r,1); tetGrid.unshift(Array(tetCols).fill(0)); tetScore+=10; r++; }
+                }
+                document.getElementById('v-tetris-score').innerText="Очки: "+tetScore; updateScore("🧱 Тетріс (Очки)", tetScore); spawnTetris();
+            }
+            drawTetris();
+        }
+        function drawTetris() {
+            let canvas = document.getElementById('v-tetris-canvas'); if(!canvas) return;
+            let ctx = canvas.getContext('2d'); ctx.fillStyle='#0f172a'; ctx.fillRect(0,0,160,280);
+            for(let r=0; r<tetRows; r++) {
+                for(let c=0; c<tetCols; c++) {
+                    if(tetGrid[r][c]) { ctx.fillStyle='#38bdf8'; ctx.fillRect(c*20, r*20, 19, 19); }
+                }
+            }
+            ctx.fillStyle='#facc15';
+            for(let r=0; r<tetCurrent.length; r++) {
+                for(let c=0; c<tetCurrent[r].length; c++) {
+                    if(tetCurrent[r][c]) ctx.fillRect((tetX+c)*20, (tetY+r)*20, 19, 19);
+                }
+            }
+        }
+
+        // 18. МАТРИЦЯ ПАМ'ЯТІ
+        let memSeq=[], memUser=[], memLevel=0, memActive=false;
+        function startMem() { memSeq=[]; memLevel=0; nextLevelMem(); }
+        function nextLevelMem() {
+            memUser=[]; memLevel++; document.getElementById('v-mem-score').innerText="Рівень: "+memLevel; updateScore("🧠 Пам'ять (Рівень)", memLevel);
+            memSeq.push(Math.floor(Math.random()*9)); flashSeqMem();
+        }
+        async function flashSeqMem() {
+            memActive=false;
+            for(let x of memSeq) {
+                await new Promise(r=>setTimeout(r,400));
+                let s = document.getElementById('ms-'+x); s.style.background='#38bdf8';
+                await new Promise(r=>setTimeout(r,400)); s.style.background='#1e293b';
+            }
+            memActive=true;
+        }
+        function clickMem(i) {
+            if(!memActive) return;
+            memUser.push(i);
+            let s = document.getElementById('ms-'+i); s.style.background='#22c55e'; setTimeout(()=>s.style.background='#1e293b',200);
+            if(memUser[memUser.length-1] !== memSeq[memUser.length-1]) { document.getElementById('v-mem-score').innerText="💥 Помилка! Рівень: "+memLevel; memActive=false; return; }
+            if(memUser.length === memSeq.length) { memActive=false; setTimeout(nextLevelMem, 800); }
+        }
+
+        // 19. АІМ-ТРЕНЕР
+        let aimHits=0, aimTime=20;
+        function startAim() {
+            aimHits=0; aimTime=20; document.getElementById('v-aim-score').innerText=`Попадання: 0 | Час: 20с`;
+            moveAimTarget(); document.getElementById('v-aim-target').style.display='block';
+            clearInterval(timers.aim); timers.aim = setInterval(()=>{
+                aimTime--; document.getElementById('v-aim-score').innerText=`Попадання: ${aimHits} | Час: ${aimTime}с`;
+                if(aimTime<=0) { clearInterval(timers.aim); document.getElementById('v-aim-target').style.display='none'; document.getElementById('v-aim-score').innerText=`Тренування завершено! Збито: ${aimHits}`; updateScore("🎯 Аім-тренер (Попадання)", aimHits); }
+            },1000);
+        }
+        function hitAim() { aimHits++; document.getElementById('v-aim-score').innerText=`Попадання: ${aimHits} | Час: ${aimTime}с`; moveAimTarget(); }
+        function moveAimTarget() {
+            let t = document.getElementById('v-aim-target');
+            t.style.top = Math.floor(Math.random()*180)+'px'; t.style.left = Math.floor(Math.random()*260)+'px';
+        }
+
+        // 20. ДУЕЛЬ НА РЕАКЦІЮ
+        let duelRound = 0, duelState = 0;
+        let duelBotTime = 500, duelStartMs;
+        
+        function playDuel() {
+            duelRound = 0;
+            duelBotTime = 500;
+            document.getElementById('v-duel-score').innerText = "Раунд: 0";
+            startDuelRound();
+        }
+        
+        function startDuelRound() {
+            duelState = 1;
+            let light = document.getElementById('v-duel-light');
+            light.style.background = '#ef4444'; // Червоний
+            light.style.color = '#090d16';
+            light.innerText = "ЧЕКАЙ...";
+            if(timers.duelTimeout) clearTimeout(timers.duelTimeout);
+            
+            let waitTime = 1500 + Math.random() * 3000;
+            timers.duelTimeout = setTimeout(() => {
+                duelState = 2;
+                light.style.background = '#22c55e'; // Зелений
+                light.innerText = "ВОГОНЬ!";
+                duelStartMs = Date.now();
+                
+                // Постріл бота
+                timers.duelTimeout = setTimeout(() => {
+                    if(duelState === 2) {
+                        endDuel(false, "💥 ТЕБЕ ВБИЛИ!\nБот був швидшим.");
+                    }
+                }, duelBotTime);
+            }, waitTime);
+        }
+        
+        function duelShoot() {
+            if(duelState === 0) return;
+            if(duelState === 1) {
+                // Фальстарт
+                if(timers.duelTimeout) clearTimeout(timers.duelTimeout);
+                endDuel(false, "❌ ФАЛЬСТАРТ!\nТи вистрілив зарано.");
+            } else if(duelState === 2) {
+                // Вчасний постріл
+                if(timers.duelTimeout) clearTimeout(timers.duelTimeout);
+                let reactTime = Date.now() - duelStartMs;
+                duelRound++;
+                updateScore("🤠 Дуель (Раунди)", duelRound);
+                document.getElementById('v-duel-score').innerText = "Раунд: " + duelRound;
+                
+                let light = document.getElementById('v-duel-light');
+                light.style.background = '#38bdf8';
+                light.innerText = `ПЕРЕМОГА!\nТвій час: ${reactTime}мс`;
+                duelState = 0;
+                
+                duelBotTime = Math.max(180, duelBotTime - 25); 
+                setTimeout(startDuelRound, 2000);
+            }
+        }
+        
+        function endDuel(win, msg) {
+            duelState = 0;
+            let light = document.getElementById('v-duel-light');
+            light.style.background = '#1e293b';
+            light.style.color = '#f1f5f9';
+            light.innerText = msg;
+        }
+
+        // 21. ГЕОМЕТРІ ДАШ
+        let dashY = 150, dashV = 0, dashObs = [], dashScore = 0, dashJumping = false;
+        function playDash() {
+            dashY = 150; dashV = 0; dashObs = []; dashScore = 0; dashJumping = false;
+            document.getElementById('v-dash-score').innerText = "Прогрес: 0";
+            clearInterval(timers.dash); timers.dash = setInterval(loopDash, 30);
+        }
+        function jumpDash() {
+            if(!dashJumping) { dashV = -8; dashJumping = true; }
+        }
+        function loopDash() {
+            let canvas = document.getElementById('v-dash-canvas'); 
+            if(!canvas) return; 
+            let ctx = canvas.getContext('2d');
+            
+            // Фізика стрибка
+            dashV += 0.6; // Гравітація
+            dashY += dashV;
+            if(dashY >= 150) { dashY = 150; dashV = 0; dashJumping = false; }
+            
+            // Генерація перешкод
+            if(Math.random() < 0.04 && (dashObs.length === 0 || dashObs[dashObs.length-1].x < 110)) {
+                dashObs.push({x: 210, type: Math.random() > 0.4 ? 'spike' : 'block'});
+            }
+            
+            dashScore++;
+            let currentScore = Math.floor(dashScore / 10);
+            document.getElementById('v-dash-score').innerText = "Прогрес: " + currentScore;
+            
+            // Малювання фону
+            ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, 210, 200); 
+            ctx.fillStyle = '#334155'; ctx.fillRect(0, 170, 210, 30); // Земля
+            
+            // Малювання гравця (Куб)
+            ctx.fillStyle = '#38bdf8'; 
+            ctx.fillRect(30, dashY, 20, 20);
+            
+            // Оновлення та малювання перешкод
+            for(let i = dashObs.length - 1; i >= 0; i--) {
+                dashObs[i].x -= 5; // Швидкість руху
+                let o = dashObs[i];
+                
+                if(o.type === 'spike') {
+                    // Шип (Трикутник)
+                    ctx.fillStyle = '#ef4444';
+                    ctx.beginPath();
+                    ctx.moveTo(o.x + 10, 150);
+                    ctx.lineTo(o.x, 170);
+                    ctx.lineTo(o.x + 20, 170);
+                    ctx.fill();
+                } else {
+                    // Блок (Квадрат)
+                    ctx.fillStyle = '#facc15';
+                    ctx.fillRect(o.x, 150, 20, 20);
+                }
+                
+                // Зіткнення (Hitbox)
+                if(o.x < 45 && o.x + 15 > 35) {
+                    if(o.type === 'spike' && dashY + 20 > 155) {
+                        dieDash(currentScore); return;
+                    }
+                    if(o.type === 'block' && dashY + 20 > 150) {
+                        dieDash(currentScore); return;
+                    }
+                }
+                
+                // Видалення перешкод поза екраном
+                if(o.x < -20) dashObs.splice(i, 1);
+            }
+        }
+        function dieDash(finalScore) {
+            clearInterval(timers.dash);
+            document.getElementById('v-dash-score').innerText = "💥 Удар! Прогрес: " + finalScore;
+            updateScore("🧊 Геометрія (Прогрес)", finalScore);
+        }
+
+        upC();
+    </script>
+</body>
+</html>
